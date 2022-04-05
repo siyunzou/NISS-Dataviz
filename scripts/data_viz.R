@@ -6,6 +6,8 @@ library(sp)
 library(broom) 
 library(rgeos)
 library(mapproj)
+library(stringr)
+library(plotly)
 
 #Import hexbins
 hex <- geojson_read("../NISS-Dataviz/data/us_states_hexgrid.geojson", what = "sp")
@@ -44,7 +46,7 @@ hex_fortify$bin <- cut(hex_fortify$col_total, breaks = c(20, 30, 40, 50, 60),
                         labels = c("<20", "20-30", "30-50", "50+"))
 my_palette <- brewer.pal(n = 4, name = "Greens")
 
-ggplot() +
+ggplot() + 
   geom_polygon(data = hex_fortify, aes(fill = bin, x = long, y = lat, group = group), 
                size = 0, alpha = 0.9, color = "#f7f7f7") +
   geom_text(data = centers, aes(x = x, y = y, label = id), 
@@ -67,3 +69,19 @@ ggplot() +
     legend.background = element_rect(), #This is the legend background 
     plot.title = element_text(size=18, hjust=0.5, color = "black", face="bold"), #This we where we customize the title 
   )
+
+
+##Making a map with continuous filling
+map2 <- ggplot() + 
+  geom_polygon(data = hex_fortify, aes(fill = col_total, x = long, y = lat, group = group), 
+               size = 0, alpha = 0.9, color = "#f7f7f7") +
+  geom_text(data = centers, aes(x = x, y = y, label = id), 
+            color = "#252525", size = 5) + #Add our labels
+  theme_void() +
+  scale_fill_gradient(low = "white", high = "#74c476", 
+                      name = "Percent with bachelor's or higher degree in the United States in 2019", limits = c(0, 60)) +
+  ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")
+
+
+ggplotly(map2, tooltip = "col_total")
+
