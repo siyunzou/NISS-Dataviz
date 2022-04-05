@@ -5,9 +5,10 @@ library(RColorBrewer)
 library(sp)
 library(broom) 
 library(rgeos)
+library(mapproj)
 
 #Import hexbins
-hex <- geojson_read("../data/us_states_hexgrid.geojson", what = "sp")
+hex <- geojson_read("../NISS-Dataviz/data/us_states_hexgrid.geojson", what = "sp")
 
 #Reformat the 'google_name' field
 hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", google_name))
@@ -23,7 +24,7 @@ ggplot () +
   coord_map ()
 
 # read data 
-edu_data <- read_csv('../data/104.85_cleaned.csv')
+edu_data <- read_csv('../NISS-Dataviz/data/104.85_cleaned.csv')
 
 sapply(edu_data, class)
 
@@ -37,23 +38,29 @@ mean(edu_data$col_total)
 range(edu_data$col_total)
 
 #Add labels 
-centers <- cbind.data.frame(data.frame(gCentroid(hex, byid=TRUE), id=hex@data$iso3166_2))
+centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@data$iso3166_2))
 
-hex_fortify$bin <- cut( hex_fortify$col_total , breaks=c(20, 30, 40, 50, 60), labels=c("<20", "20-30", "30-50", "50+"))
-my_palette <- brewer.pal(n=4, name="Greens")
+hex_fortify$bin <- cut(hex_fortify$col_total, breaks = c(20, 30, 40, 50, 60), 
+                        labels = c("<20", "20-30", "30-50", "50+"))
+my_palette <- brewer.pal(n = 4, name = "Greens")
 
 ggplot() +
-  geom_polygon(data=hex_fortify, aes(fill=bin, x=long, y=lat, group=group), size=0, alpha=0.9, color="#f7f7f7") +
-  geom_text(data=centers, aes(x=x, y=y, label=id), color="#252525", size=5) + #Add our labels
+  geom_polygon(data = hex_fortify, aes(fill = bin, x = long, y = lat, group = group), 
+               size = 0, alpha = 0.9, color = "#f7f7f7") +
+  geom_text(data = centers, aes(x = x, y = y, label = id), 
+            color = "#252525", size = 5) + #Add our labels
   theme_void() +
   scale_fill_manual(
-    values=my_palette, 
-    name="Rates of bachelor's degree attainment among persons age 25 and over", #Add legend title 
-    guide= guide_legend( keyheight=unit(4, units="mm"), keywidth=unit(10, units="mm"), direction="horizontal", label.position="bottom", title.position="top", nrow=1)
+    values = my_palette, 
+    name ="Rates of bachelor's degree attainment among persons age 25 and over", #Add legend title 
+    guide = guide_legend(keyheight = unit(4, units = "mm"), 
+                         keywidth = unit(10, units = "mm"), 
+                         direction = "horizontal", 
+                         label.position = "bottom", 
+                         title.position = "top", nrow = 1)
   ) +
   ggtitle( "Percent with bachelor's or higher degree in the United States in 2019" ) + #Add map title
-  theme(
-    legend.position = c(0.5, 0.9), #Choose legend positioning (horizontal, vertical)
+  theme(legend.position = c(0.5, 0.9), #Choose legend positioning (horizontal, vertical)
     text = element_text(color = "black", face="bold"), #This is where we customize the legend text
     plot.background = element_rect(), #Choose the colour of the background behind the title
     panel.background = element_rect(), #This is the main background
