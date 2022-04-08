@@ -26,7 +26,7 @@ ggplot () +
   coord_map ()
 
 # read data 
-edu_data <- read_csv('../NISS-Dataviz/data/104.85_cleaned.csv')
+edu_data <- read_csv('../NISS-Dataviz/data/104.85_errors_cleaned.csv')
 
 sapply(edu_data, class)
 
@@ -78,7 +78,7 @@ map2 <- ggplot() +
   geom_text(data = centers, aes(x = x, y = y, label = id), 
             color = "#252525", size = 5) + #Add our labels
   theme_void() +
-  scale_fill_gradient(low = "white", high = "#74c476", 
+  scale_fill_gradient(low = "white", high = "purple", 
                       name = "Percent with bachelor's or higher degree in the United States in 2019", limits = c(0, 60)) +
   ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")
 
