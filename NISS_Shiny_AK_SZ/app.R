@@ -19,12 +19,14 @@ hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", go
 hex_fortify <- tidy(hex, region = "google_name") 
 
 # read education data 
-edu_data <- read_csv('104.85_errors_cleaned.csv')
+College <- read_csv('coldata_cleaned.csv')
+HighSchool <- read_csv('hsdata_cleaned.csv')
 
-sapply(edu_data, class)
+hex_fortify_col <- hex_fortify %>%
+    left_join(. , College, by=c("id"="State")) 
 
-hex_fortify <- hex_fortify %>%
-    left_join(. , edu_data, by=c("id"="State")) 
+hex_fortify_hs <- hex_fortify %>%
+    left_join(. , HighSchool, by=c("id"="State"))
 
 #Define centers of hexbins
 centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@data$iso3166_2))
@@ -59,14 +61,17 @@ server <- function(input, output) {
 
     output$distPlot <- renderPlotly({
         ggplotly(ggplot() + 
-            geom_polygon(data = hex_fortify, aes(fill = col_total, x = long, y = lat, group = group), 
+            geom_polygon(data = hex_fortify_col, aes(fill = total, x = long, y = lat, 
+                                                     group = group, 
+                                                     text = paste("total standard error:", 
+                                                                  `total standard error`, 
+                                                                  "<br>state:", `id`)), 
                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
             theme_void() +
             scale_fill_gradient(low = "white", high = "purple", 
-                                name = "Percent Acheived Degree", 
+                                name = "Percent Acheived", 
                                 limits = c(input$percentile[1], input$percentile[2])) + 
-            ggtitle( "Percent with bachelor's or higher degree in the United States in 2019"), 
-            tooltip = "col_total") %>% 
+            ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")) %>% 
             plotly::layout(xaxis = list(title = "", 
                                         zeroline = FALSE, 
                                         showline = FALSE,
