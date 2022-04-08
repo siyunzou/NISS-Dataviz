@@ -68,7 +68,17 @@ server <- function(input, output) {
                                 name = "Percent Acheived Degree", 
                                 limits = c(input$percentile[1], input$percentile[2])) + 
             ggtitle( "Percent with bachelor's or higher degree in the United States in 2019"), 
-            tooltip = "col_total")
+            tooltip = "col_total") %>% 
+            plotly::layout(xaxis = list(title = "", 
+                                        zeroline = FALSE, 
+                                        showline = FALSE,
+                                        showticklabels = FALSE, 
+                                        showgrid = FALSE), 
+                           yaxis = list(title = "", 
+                                        zeroline = FALSE, 
+                                        showline = FALSE,
+                                        showticklabels = FALSE, 
+                                        showgrid = FALSE))
     })
 }
 

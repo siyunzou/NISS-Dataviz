@@ -83,5 +83,15 @@ map2 <- ggplot() +
   ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")
 
 
-ggplotly(map2, tooltip = "col_total")
+ggplotly(map2, tooltip = "col_total") %>% 
+  plotly::layout(xaxis = list(title = "", 
+                              zeroline = FALSE, 
+                              showline = FALSE,
+                              showticklabels = FALSE, 
+                              showgrid = FALSE), 
+                 yaxis = list(title = "", 
+                              zeroline = FALSE, 
+                              showline = FALSE,
+                              showticklabels = FALSE, 
+                              showgrid = FALSE))
 
