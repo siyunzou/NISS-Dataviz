@@ -63,6 +63,16 @@ fig <- df %>%
 
 # write.csv(edu_data, "../data/104.85_errors_cleaned.csv")
 
+hs_data <- edu_data %>%
+  select(-col_2ormore, -col_total, -col_total_error, - col_2ormore_error,
+         -col_asia, -col_asia_error, -col_black, -col_black_error, -col_hisp,
+         -col_hisp_error, -col_white, -col_white_error) %>%
+  rename(total = hs_total,
+         "total standard error" = hs_total_error,
+         white = hs_white,
+         "white standard error" = hs_white_error,
+         )
+
 
 
 
