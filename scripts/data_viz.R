@@ -74,16 +74,14 @@ ggplot() +
 ##Making a map with continuous filling
 map2 <- ggplot() + 
   geom_polygon(data = hex_fortify, aes(fill = col_total, x = long, y = lat, group = group), 
-               size = 0, alpha = 0.9, color = "#f7f7f7") +
-  geom_text(data = centers, aes(x = x, y = y, label = id), 
-            color = "#252525", size = 5) + #Add our labels
+               size = 0, alpha = 0.9, color = "#f7f7f7") + 
   theme_void() +
   scale_fill_gradient(low = "white", high = "purple", 
                       name = "Percent with bachelor's or higher degree in the United States in 2019", limits = c(0, 60)) +
   ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")
 
 
-ggplotly(map2, tooltip = "col_total") %>% 
+map2.plotly <- ggplotly(map2, tooltip = "col_total") %>% 
   plotly::layout(xaxis = list(title = "", 
                               zeroline = FALSE, 
                               showline = FALSE,
@@ -93,5 +91,8 @@ ggplotly(map2, tooltip = "col_total") %>%
                               zeroline = FALSE, 
                               showline = FALSE,
                               showticklabels = FALSE, 
-                              showgrid = FALSE))
+                              showgrid = FALSE)) %>%
+  add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F)
+
+map2.plotly
 

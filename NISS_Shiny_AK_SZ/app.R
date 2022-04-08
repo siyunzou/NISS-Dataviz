@@ -49,7 +49,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            plotlyOutput("distPlot"), 
-           width = 6
+           width = 8
         )
     )
 )
@@ -61,8 +61,6 @@ server <- function(input, output) {
         ggplotly(ggplot() + 
             geom_polygon(data = hex_fortify, aes(fill = col_total, x = long, y = lat, group = group), 
                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
-            geom_text(data = centers, aes(x = x, y = y, label = id), 
-                      color = "#252525", size = 5) + #Add our labels
             theme_void() +
             scale_fill_gradient(low = "white", high = "purple", 
                                 name = "Percent Acheived Degree", 
@@ -78,7 +76,9 @@ server <- function(input, output) {
                                         zeroline = FALSE, 
                                         showline = FALSE,
                                         showticklabels = FALSE, 
-                                        showgrid = FALSE))
+                                        showgrid = FALSE), 
+                           height = 700) %>% 
+        add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F)
     })
 }
 
