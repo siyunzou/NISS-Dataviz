@@ -63,15 +63,17 @@ server <- function(input, output) {
         ggplotly(ggplot() + 
             geom_polygon(data = hex_fortify_col, aes(fill = total, x = long, y = lat, 
                                                      group = group, 
-                                                     text = paste("total standard error:", 
-                                                                  `total standard error`, 
-                                                                  "<br>state:", `id`)), 
+                                                     text = paste0("State: ", `id`, 
+                                                                  "<br>Percentage (", "total", "): ", 
+                                                                  `total`, "%",
+                                                                  "<br>Standard error: ", 
+                                                                  `total standard error`)), 
                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
             theme_void() +
             scale_fill_gradient(low = "white", high = "purple", 
                                 name = "Percent Acheived", 
                                 limits = c(input$percentile[1], input$percentile[2])) + 
-            ggtitle( "Percent with bachelor's or higher degree in the United States in 2019")) %>% 
+            ggtitle( "Percent with bachelor's or higher degree in the United States in 2019"), tooltip = "text") %>% 
             plotly::layout(xaxis = list(title = "", 
                                         zeroline = FALSE, 
                                         showline = FALSE,
