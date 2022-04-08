@@ -36,8 +36,8 @@ hex_fortify <- hex_fortify %>%
 view(hex_fortify)
 
 #explore descriptive statistics 
-mean(edu_data$col_total)
-range(edu_data$col_total)
+mean(edu_data$col_total_error)
+range(edu_data$col_total_error)
 
 #Add labels 
 centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@data$iso3166_2))
