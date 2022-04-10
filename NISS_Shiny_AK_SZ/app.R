@@ -38,10 +38,10 @@ centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@dat
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
+    
     # Application title
     titlePanel("NISS Placeholder title"),
-
+    
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
@@ -61,12 +61,12 @@ ui <- fluidPage(
                         max = 100,
                         value = c(0, 60))
         ),
-
+        
         # Show a plot of the generated distribution
         mainPanel(
-                plotlyOutput("distPlot"),
-                #plotlyOutput("boxPlot"), 
-                width = 8
+            plotlyOutput("distPlot"),
+            #plotlyOutput("boxPlot"), 
+            width = 8
         )
     )
 )
@@ -96,68 +96,50 @@ server <- function(input, output) {
     
     output$distPlot <- renderPlotly({
         subplot(ggplotly(ggplot() + 
-            geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
-                                                     group = group, 
-                                                     text = paste0(id, 
-                                                                  "<br>Percentage (", "total", "): ", 
-                                                                  datasetInput()[[input$race]], "%",
-                                                                  "<br>Standard error: ", 
-                                                                  datasetInput()[[paste(input$race, "standard error")]])), 
-                         size = 0, alpha = 0.9, color = "#f7f7f7") + 
-            theme_void() +
-            scale_fill_gradient(low = "white", high = "purple", 
-                                name = "Percent (%)", 
-                                limits = c(input$percentile[1], input$percentile[2])) + 
-            ggtitle(paste("Percent with", tolower(input$degree), "in the United States in 2019")), 
-            tooltip = "text", height = 700) %>% 
-            plotly::layout(xaxis = list(title = "", 
-                                        zeroline = FALSE, 
-                                        showline = FALSE,
-                                        showticklabels = FALSE, 
-                                        showgrid = FALSE), 
-                           yaxis = list(title = "", 
-                                        zeroline = FALSE, 
-                                        showline = FALSE,
-                                        showticklabels = FALSE, 
-                                        showgrid = FALSE)#, height = 700
-                           ) %>% 
-        add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F), 
-        plot_ly(x = datasetInput2()[[error.var()]], type="box", 
-                hoverinfo = "text", 
-                hovertext = paste(datasetInput2()$State,"<br>Standard Error:", 
-                                  datasetInput2()[[error.var()]]), 
-                jitter = datasetInput2()[[error.var()]], 
-<<<<<<< HEAD
-                pointpos = .1, boxpoints = 'all', name = " "),
-        nrows = 2, heights = c(0.85, 0.13)) %>%
-            layout(annotations = a)
-=======
-                pointpos = .1, boxpoints = 'all', name = " ") ,
-        nrows = 2, heights = c(0.85, 0.13)) %>% layout(annotations = 
-                                                           list(text = "Standard Error Distribution", 
-                                                                x = .175, 
-                                                                y = .12, 
-                                                                xref = "paper", 
-                                                                yref = "paper", 
-                                                                xanchor = "center", 
-                                                                yanchor = "bottom", 
-                                                                showarrow = F))
->>>>>>> ecde73408485d0456d95db400efb4255935a5781
-        })
+                             geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
+                                                                     group = group, 
+                                                                     text = paste0(id, 
+                                                                                   "<br>Percentage (", "total", "): ", 
+                                                                                   datasetInput()[[input$race]], "%",
+                                                                                   "<br>Standard error: ", 
+                                                                                   datasetInput()[[paste(input$race, "standard error")]])), 
+                                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
+                             theme_void() +
+                             scale_fill_gradient(low = "white", high = "purple", 
+                                                 name = "Percent (%)", 
+                                                 limits = c(input$percentile[1], input$percentile[2])) + 
+                             ggtitle(paste("Percent with", tolower(input$degree), "in the United States in 2019")), 
+                         tooltip = "text", height = 700) %>% 
+                    plotly::layout(xaxis = list(title = "", 
+                                                zeroline = FALSE, 
+                                                showline = FALSE,
+                                                showticklabels = FALSE, 
+                                                showgrid = FALSE), 
+                                   yaxis = list(title = "", 
+                                                zeroline = FALSE, 
+                                                showline = FALSE,
+                                                showticklabels = FALSE, 
+                                                showgrid = FALSE)#, height = 700
+                    ) %>% 
+                    add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F), 
+                plot_ly(x = datasetInput2()[[error.var()]], type="box", 
+                        hoverinfo = "text", 
+                        hovertext = paste(datasetInput2()$State,"<br>Standard Error:", 
+                                          datasetInput2()[[error.var()]]), 
+                        jitter = datasetInput2()[[error.var()]], 
+                        pointpos = .1, boxpoints = 'all', name = " ") ,
+                nrows = 2, heights = c(0.85, 0.13)) %>% layout(annotations = 
+                                                                   list(text = "Standard Error Distribution", 
+                                                                        x = .175, 
+                                                                        y = .12, 
+                                                                        xref = "paper", 
+                                                                        yref = "paper", 
+                                                                        xanchor = "center", 
+                                                                        yanchor = "bottom", 
+                                                                        showarrow = F))
+    })
     
 }
-
-a <- list(
-    text = "Data 1",
-    xref = "paper",
-    yref = "paper",
-    yanchor = "bottom",
-    xanchor = "center",
-    align = "center",
-    x = 0.5,
-    y = 1,
-    showarrow = FALSE
-)
 
 # Run the application 
 shinyApp(ui = ui, server = server)
