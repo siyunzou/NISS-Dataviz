@@ -127,10 +127,23 @@ server <- function(input, output) {
                 %{datasetInput2()$State}', 
                 jitter = datasetInput2()[[error.var()]], 
                 pointpos = .1, boxpoints = 'all', name = " "),
-        nrows = 2, heights = c(0.85, 0.13))
+        nrows = 2, heights = c(0.85, 0.13)) %>%
+            layout(annotations = a)
         })
     
 }
+
+a <- list(
+    text = "Data 1",
+    xref = "paper",
+    yref = "paper",
+    yanchor = "bottom",
+    xanchor = "center",
+    align = "center",
+    x = 0.5,
+    y = 1,
+    showarrow = FALSE
+)
 
 # Run the application 
 shinyApp(ui = ui, server = server)

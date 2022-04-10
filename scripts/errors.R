@@ -15,6 +15,9 @@ edu_data <- read_csv("../NISS-Dataviz/data/104.85_errors_cleaned.csv")
 hs_data <- read_csv("../NISS-Dataviz/data/hsdata_cleaned.csv")
 col_data <- read_csv("../NISS-Dataviz/data/coldata_cleaned.csv")
 
+hs_data_US <- hs_data[1,]
+col_data_US <- col_data[1,]
+
 # clean parenthesis in errors 
 # edu_data <- edu_data %>%
 #   mutate(col_total_error = as.numeric(gsub("[()]", "", edu_data$col_total_error)),
@@ -65,9 +68,13 @@ fig <- df %>%
   )
 
 fig <- plot_ly(y=hs_data$`total standard error`, type="box", text=~hs_data$State, 
-               name='hs total standard error', jitter = hs_data$`total standard error`, 
-               pointpos = .1, boxpoints = 'all')
-
+               name= ' ', 
+               jitter = hs_data$`total standard error`, 
+               pointpos = .1, boxpoints = 'all',
+               hoverinfo = "text",
+               hovertext = paste("standard error:", hs_data$`total standard error`,
+                                 "<br> state:", hs_data$State)) 
+               
 summary(hs_data)  
 
 
@@ -112,6 +119,8 @@ col_data <- edu_data %>%
 
 write.csv(hs_data, "../NISS-Dataviz/data/hsdata_cleaned.csv")
 write.csv(col_data, "../NISS-Dataviz/data/coldata_cleaned.csv")
+write.csv(hs_data_US, "../NISS-Dataviz/data/hsdata_UScleaned.csv")
+write.csv(col_data_US, "../NISS-Dataviz/data/coldata_UScleaned.csv")
 
 
 
