@@ -10,7 +10,7 @@ library(plotly)
 library(shiny)
 
 #Import hexbins
-hex <- geojson_read("us_states_hexgrid.geojson", what = "sp")
+hex <- geojson_read("../NISS-Dataviz/data/us_states_hexgrid.geojson", what = "sp")
 
 #Reformat the 'google_name' field
 hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", google_name))
@@ -19,10 +19,10 @@ hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", go
 hex_fortify <- tidy(hex, region = "google_name") 
 
 # read education data 
-College <- read_csv('coldata_cleaned.csv')
+College <- read_csv('../NISS-Dataviz/data/coldata_cleaned.csv')
 College$black <- as.numeric(College$black)
 College$asian <- as.numeric(College$asian)
-HighSchool <- read_csv('hsdata_cleaned.csv')
+HighSchool <- read_csv('../NISS-Dataviz/data/hsdata_cleaned.csv')
 HighSchool$black <- as.numeric(HighSchool$black)
 HighSchool$asian <- as.numeric(HighSchool$asian)
 
@@ -64,7 +64,12 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotlyOutput("distPlot"), 
+            tabPanel("Plot"),
+            fluidRow(
+                column(8, plotlyOutput("distPlot")),
+                column(12, plotlyOutput("boxPlot"))
+            )
+           , 
            width = 8
         )
     )
@@ -83,7 +88,7 @@ server <- function(input, output) {
     })
     
     output$distPlot <- renderPlotly({
-        ggplotly(ggplot() + 
+        map <- ggplotly(ggplot() + 
             geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
                                                      group = group, 
                                                      text = paste0("State: ", id, 
@@ -108,10 +113,15 @@ server <- function(input, output) {
                                         showline = FALSE,
                                         showticklabels = FALSE, 
                                         showgrid = FALSE), 
-                           height = 700) %>% 
+                           height = 400) %>% 
         add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F)
     })
 }
+
+# boxplot 
+plot_ly(y=hs_data$`total standard error`, type="box", text=~hs_data$State, 
+        name='hs total standard error', jitter = hs_data$`total standard error`, 
+        pointpos = .1, boxpoints = 'all')
 
 # Run the application 
 shinyApp(ui = ui, server = server)
