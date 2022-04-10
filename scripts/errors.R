@@ -119,8 +119,8 @@ col_data <- edu_data %>%
 
 write.csv(hs_data, "../NISS-Dataviz/data/hsdata_cleaned.csv")
 write.csv(col_data, "../NISS-Dataviz/data/coldata_cleaned.csv")
-write.csv(hs_data_US, "../NISS-Dataviz/data/hsdata_UScleaned.csv")
-write.csv(col_data_US, "../NISS-Dataviz/data/coldata_UScleaned.csv")
+write.csv(hs_data_US, "../NISS-Dataviz/NISS_Shiny_AK_SZ/hsdata_UScleaned.csv")
+write.csv(col_data_US, "../NISS-Dataviz/NISS_Shiny_AK_SZ/coldata_UScleaned.csv")
 
 
 

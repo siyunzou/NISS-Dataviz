@@ -19,10 +19,10 @@ hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", go
 hex_fortify <- tidy(hex, region = "google_name") 
 
 # read education data 
-College <- read_csv('coldata_cleaned.csv')
+College <- read_csv('..coldata_cleaned.csv')[-1,]
 College$black <- as.numeric(College$black)
 College$asian <- as.numeric(College$asian)
-HighSchool <- read_csv('hsdata_cleaned.csv')
+HighSchool <- read_csv('hsdata_cleaned.csv')[-1,]
 HighSchool$black <- as.numeric(HighSchool$black)
 HighSchool$asian <- as.numeric(HighSchool$asian)
 
