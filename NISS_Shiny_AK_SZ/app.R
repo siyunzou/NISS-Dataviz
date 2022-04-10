@@ -98,7 +98,7 @@ server <- function(input, output) {
         subplot(ggplotly(ggplot() + 
             geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
                                                      group = group, 
-                                                     text = paste0("State: ", id, 
+                                                     text = paste0(id, 
                                                                   "<br>Percentage (", "total", "): ", 
                                                                   datasetInput()[[input$race]], "%",
                                                                   "<br>Standard error: ", 
@@ -123,11 +123,20 @@ server <- function(input, output) {
                            ) %>% 
         add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F), 
         plot_ly(x = datasetInput2()[[error.var()]], type="box", 
-                hovertemplate = 'Standard error = %{x}, <br> 
-                %{datasetInput2()$State}', 
+                hoverinfo = "text", 
+                hovertext = paste(datasetInput2()$State,"<br>Standard Error:", 
+                                  datasetInput2()[[error.var()]]), 
                 jitter = datasetInput2()[[error.var()]], 
-                pointpos = .1, boxpoints = 'all', name = " "),
-        nrows = 2, heights = c(0.85, 0.13))
+                pointpos = .1, boxpoints = 'all', name = " ") ,
+        nrows = 2, heights = c(0.85, 0.13)) %>% layout(annotations = 
+                                                           list(text = "Standard Error Distribution", 
+                                                                x = .175, 
+                                                                y = .12, 
+                                                                xref = "paper", 
+                                                                yref = "paper", 
+                                                                xanchor = "center", 
+                                                                yanchor = "bottom", 
+                                                                showarrow = F))
         })
     
 }
