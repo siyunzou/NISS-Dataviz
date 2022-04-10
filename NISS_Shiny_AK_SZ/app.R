@@ -10,7 +10,7 @@ library(plotly)
 library(shiny)
 
 #Import hexbins
-hex <- geojson_read("../NISS-Dataviz/data/us_states_hexgrid.geojson", what = "sp")
+hex <- geojson_read("us_states_hexgrid.geojson", what = "sp")
 
 #Reformat the 'google_name' field
 hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", google_name))
@@ -19,10 +19,10 @@ hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", go
 hex_fortify <- tidy(hex, region = "google_name") 
 
 # read education data 
-College <- read_csv('../NISS-Dataviz/data/coldata_cleaned.csv')
+College <- read_csv('coldata_cleaned.csv')
 College$black <- as.numeric(College$black)
 College$asian <- as.numeric(College$asian)
-HighSchool <- read_csv('../NISS-Dataviz/data/hsdata_cleaned.csv')
+HighSchool <- read_csv('hsdata_cleaned.csv')
 HighSchool$black <- as.numeric(HighSchool$black)
 HighSchool$asian <- as.numeric(HighSchool$asian)
 
@@ -64,13 +64,9 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-            tabPanel("Plot"),
-            fluidRow(
-                column(8, plotlyOutput("distPlot")),
-                column(12, plotlyOutput("boxPlot"))
-            )
-           , 
-           width = 8
+                plotlyOutput("distPlot"),
+                #plotlyOutput("boxPlot"), 
+                width = 8
         )
     )
 )
@@ -87,8 +83,19 @@ server <- function(input, output) {
         return(dataset)
     })
     
+    datasetInput2 <- reactive({
+        if (input$degree == "Bachelor's Degree or Higher"){
+            dataset <- College
+        }
+        else if (input$degree == "High School Degree or Higher"){
+            dataset <- HighSchool
+        }
+        return(dataset)
+    })
+    error.var <- reactive({paste(input$race, "standard error")})
+    
     output$distPlot <- renderPlotly({
-        map <- ggplotly(ggplot() + 
+        subplot(ggplotly(ggplot() + 
             geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
                                                      group = group, 
                                                      text = paste0("State: ", id, 
@@ -102,7 +109,7 @@ server <- function(input, output) {
                                 name = "Percent (%)", 
                                 limits = c(input$percentile[1], input$percentile[2])) + 
             ggtitle(paste("Percent with", tolower(input$degree), "in the United States in 2019")), 
-            tooltip = "text") %>% 
+            tooltip = "text", height = 700) %>% 
             plotly::layout(xaxis = list(title = "", 
                                         zeroline = FALSE, 
                                         showline = FALSE,
@@ -112,16 +119,18 @@ server <- function(input, output) {
                                         zeroline = FALSE, 
                                         showline = FALSE,
                                         showticklabels = FALSE, 
-                                        showgrid = FALSE), 
-                           height = 400) %>% 
-        add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F)
-    })
+                                        showgrid = FALSE)#, height = 700
+                           ) %>% 
+        add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F), 
+        plot_ly(x = datasetInput2()[[error.var()]], type="box", 
+                hovertemplate = 'Standard error = %{x}, <br> 
+                %{datasetInput2()$State}', 
+                jitter = datasetInput2()[[error.var()]], 
+                pointpos = .1, boxpoints = 'all', name = " "),
+        nrows = 2, heights = c(0.85, 0.13))
+        })
+    
 }
-
-# boxplot 
-plot_ly(y=hs_data$`total standard error`, type="box", text=~hs_data$State, 
-        name='hs total standard error', jitter = hs_data$`total standard error`, 
-        pointpos = .1, boxpoints = 'all')
 
 # Run the application 
 shinyApp(ui = ui, server = server)
