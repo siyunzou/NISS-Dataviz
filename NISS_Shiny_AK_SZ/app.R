@@ -10,7 +10,7 @@ library(plotly)
 library(shiny)
 
 #Import hexbins
-hex <- geojson_read("us_states_hexgrid.geojson", what = "sp")
+hex <- geojson_read("../NISS-Dataviz/NISS_Shiny_AK_SZ/us_states_hexgrid.geojson", what = "sp")
 
 #Reformat the 'google_name' field
 hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", google_name))
@@ -19,10 +19,10 @@ hex@data = hex@data %>% mutate(google_name = gsub(" \\(United States\\)", "", go
 hex_fortify <- tidy(hex, region = "google_name") 
 
 # read education data 
-College <- read_csv('..coldata_cleaned.csv')[-1,]
+College <- read_csv('../NISS-Dataviz/NISS_Shiny_AK_SZ/coldata_cleaned.csv')[-1,]
 College$black <- as.numeric(College$black)
 College$asian <- as.numeric(College$asian)
-HighSchool <- read_csv('hsdata_cleaned.csv')[-1,]
+HighSchool <- read_csv('../NISS-Dataviz/NISS_Shiny_AK_SZ/hsdata_cleaned.csv')[-1,]
 HighSchool$black <- as.numeric(HighSchool$black)
 HighSchool$asian <- as.numeric(HighSchool$asian)
 
@@ -105,7 +105,7 @@ server <- function(input, output) {
                                                                                    datasetInput()[[paste(input$race, "standard error")]])), 
                                           size = 0, alpha = 0.9, color = "#f7f7f7") + 
                              theme_void() +
-                             scale_fill_gradient(low = "white", high = "purple", 
+                             scale_fill_gradient(low = "white", high = "#9467bd", 
                                                  name = "Percent (%)", 
                                                  limits = c(input$percentile[1], input$percentile[2])) + 
                              ggtitle(paste("Percent with", tolower(input$degree), "in the United States in 2019")), 
@@ -121,7 +121,7 @@ server <- function(input, output) {
                                                 showticklabels = FALSE, 
                                                 showgrid = FALSE)#, height = 700
                     ) %>% 
-                    add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = F), 
+                    add_annotations(x = centers$x, y = centers$y, text = centers$id, showarrow = FALSE), 
                 plot_ly(x = datasetInput2()[[error.var()]], type="box", 
                         hoverinfo = "text", 
                         hovertext = paste(datasetInput2()$State,"<br>Standard Error:", 
@@ -136,7 +136,7 @@ server <- function(input, output) {
                                                                         yref = "paper", 
                                                                         xanchor = "center", 
                                                                         yanchor = "bottom", 
-                                                                        showarrow = F))
+                                                                        showarrow = FALSE))
     })
     
 }
