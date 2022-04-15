@@ -26,6 +26,9 @@ HighSchool <- read_csv('hsdata_cleaned.csv')[-1,]
 HighSchool$black <- as.numeric(HighSchool$black)
 HighSchool$asian <- as.numeric(HighSchool$asian)
 
+College_US <- read_csv('coldata_UScleaned.csv')
+HighSchool_US <- read_csv('hsdata_UScleaned.csv')
+
 hex_fortify_col <- hex_fortify %>%
     left_join(. , College, by=c("id"="State")) 
 
@@ -45,18 +48,20 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(HTML("<b>App Introduction:</b>"), 
-        HTML("<br>- Select \"Educational Attainment\" and \"Race\" from the 
+        HTML("<ul class=\"a\">
+        <li> Select \"Educational Attainment\" and \"Race\" from the 
         dropdown menus below to update the 
-        map and standard error distribution. <br>- Use the slider to 
-        adjust the percentile range displayed on the map**
-        <br>- Move your cursor over the plots for more information
-        <br><i>**Note: Both states with missing data (NA) or that are 
-             outside the percentile range will appear grey</i>"), 
+        map and standard error distribution. </li>
+        <li>Use the slider to adjust the percentile range displayed on the map**</li>
+        <li>Move your cursor over the plots for more information</li>
+        <i>**Note: Both states with missing data (NA) or that are 
+             outside the percentile range will appear grey</i>
+             </ul>"), 
             selectInput("degree", "Educational Attainment:", 
                         c("Bachelor's Degree or Higher", 
-                          "High School Degree or Higher")), 
+                          "High School Degree or Higher*")), 
             selectInput("race", "Race:", 
-                        c("Total" = "total", 
+                        c("Total*" = "total", 
                           "White" = "white", 
                           "Black" = "black", 
                           "Hispanic" = "hispanic", 
@@ -67,7 +72,18 @@ ui <- fluidPage(
                         min = 0,
                         max = 100,
                         value = c(0, 60)), 
-        HTML("interactive paragraph")
+        HTML("<b>US Overall stats:</b> 
+             <br>Percent Achieved:"), 
+        
+        textOutput("mean.text"), 
+        
+        HTML("<b> More Information:</b>
+             <br> <p><a href=\"https://nces.ed.gov/programs/digest/d20/tables/dt20_104.85.asp/\">NCES Source Data Here</a></p>
+             <i>*High school completion includes through equivalency programs 
+             such as a GED program.</i>
+             <br><i>*Total includes racial/ethnic groups not shown separately.</i>
+             <br><i>*States that have missing (NA) in data: Montana, Vermont, Wyoming </i>
+")
         ),
         
         # Show a plot of the generated distribution
@@ -100,6 +116,19 @@ server <- function(input, output) {
         }
         return(dataset)
     })
+    
+    datasetInput3 <- reactive({
+        if (input$degree == "Bachelor's Degree or Higher"){
+            dataset <- College_US
+        }
+        else if (input$degree == "High School Degree or Higher"){
+            dataset <- HighSchool_US
+        }
+        return(dataset)
+    })
+    
+    mean.text <- reactive({paste0(" ", datasetInput3()[[input$race]])})
+    
     error.var <- reactive({paste(input$race, "standard error")})
     
     output$distPlot <- renderPlotly({
@@ -107,7 +136,7 @@ server <- function(input, output) {
                              geom_polygon(data = datasetInput(), aes(fill = datasetInput()[[input$race]], x = long, y = lat, 
                                                                      group = group, 
                                                                      text = paste0(id, 
-                                                                                   "<br>Percentage (", "total", "): ", 
+                                                                                   "<br>Percentage (", input$race, "): ", 
                                                                                    datasetInput()[[input$race]], "%",
                                                                                    "<br>Standard error: ", 
                                                                                    datasetInput()[[paste(input$race, "standard error")]])), 
@@ -116,7 +145,7 @@ server <- function(input, output) {
                              scale_fill_gradient(low = "white", high = "purple", #muted purple hexcode: #9467bd
                                                  name = "Percent (%)", 
                                                  limits = c(input$percentile[1], input$percentile[2])) + 
-                             ggtitle(paste("Percent with", tolower(input$degree), "in the United States in 2019")), 
+                             ggtitle(paste("Percent with", tolower(input$degree), "in the United States")), 
                          tooltip = "text", height = 700) %>% 
                     plotly::layout(xaxis = list(title = "", 
                                                 zeroline = FALSE, 
