@@ -40,11 +40,18 @@ centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@dat
 ui <- fluidPage(
     
     # Application title
-    titlePanel("NISS Placeholder title"),
+    titlePanel(HTML(paste("Comparing Educational Attainment", "Across Racial Groups (2019)", sep = "<br/>"))),
     
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
-        sidebarPanel(
+        sidebarPanel(HTML("<b>App Introduction:</b>"), 
+        HTML("<br>- Select \"Educational Attainment\" and \"Race\" from the 
+        dropdown menus below to update the 
+        map and standard error distribution. <br>- Use the slider to 
+        adjust the percentile range displayed on the map**
+        <br>- Move your cursor over the plots for more information
+        <br><i>**Note: Both states with missing data (NA) or that are 
+             outside the percentile range will appear grey</i>"), 
             selectInput("degree", "Educational Attainment:", 
                         c("Bachelor's Degree or Higher", 
                           "High School Degree or Higher")), 
@@ -59,7 +66,8 @@ ui <- fluidPage(
                         "Percentile Range:",
                         min = 0,
                         max = 100,
-                        value = c(0, 60))
+                        value = c(0, 60)), 
+        HTML("interactive paragraph")
         ),
         
         # Show a plot of the generated distribution
