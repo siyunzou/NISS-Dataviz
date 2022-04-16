@@ -1,0 +1,13 @@
+name: NISS_Shiny_AK_SZ
+title: NISS_Shiny_AK_SZ
+username:
+account: annikak
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6103876
+bundleId: 5805291
+url: https://annikak.shinyapps.io/NISS_Shiny_AK_SZ/
+when: 1650129771.99859
+lastSyncTime: 1650129771.99859
+asMultiple: FALSE
+asStatic: FALSE
