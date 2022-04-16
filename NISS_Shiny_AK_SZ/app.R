@@ -72,9 +72,9 @@ ui <- fluidPage(
                         min = 0,
                         max = 100,
                         value = c(0, 60)), 
-        HTML("<b>US Overall stats:</b> 
-             <br>Percent Achieved:"), 
-        textOutput("mean.text"), 
+        HTML(paste0("<b>US Overall Stats (", textOutput("race.text", inline = TRUE),"):</b> 
+             <br>Percent Achieved: ", textOutput("mean.text", inline = TRUE), "<br> ",
+                   "Standard Error: ", textOutput("se.text", inline = TRUE), "<br> <br> ")),
         
         HTML("<b> More Information:</b>
              <br> <p><a href=\"https://nces.ed.gov/programs/digest/d20/tables/dt20_104.85.asp\">NCES Source Data Here</a></p>
@@ -100,7 +100,7 @@ server <- function(input, output) {
         if (input$degree == "Bachelor's Degree or Higher"){
             dataset <- hex_fortify_col
         }
-        else if (input$degree == "High School Degree or Higher"){
+        else if (input$degree == "High School Degree or Higher*"){
             dataset <- hex_fortify_hs
         }
         return(dataset)
@@ -108,27 +108,28 @@ server <- function(input, output) {
     
     datasetInput2 <- reactive({
         if (input$degree == "Bachelor's Degree or Higher"){
-            dataset <- College
+            dataset2 <- College
         }
-        else if (input$degree == "High School Degree or Higher"){
-            dataset <- HighSchool
+        else if (input$degree == "High School Degree or Higher*"){
+            dataset2 <- HighSchool
         }
-        return(dataset)
+        return(dataset2)
     })
     
     datasetInput3 <- reactive({
         if (input$degree == "Bachelor's Degree or Higher"){
-            dataset <- College_US
+            dataset3 <- College_US
         }
-        else if (input$degree == "High School Degree or Higher"){
-            dataset <- HighSchool_US
+        else if (input$degree == "High School Degree or Higher*"){
+            dataset3 <- HighSchool_US
         }
-        return(dataset)
+        return(dataset3)
     })
     
+    output$race.text <- renderText({input$race})
     output$mean.text <- renderText({paste0(" ", datasetInput3()[[input$race]])})
-    
     error.var <- reactive({paste(input$race, "standard error")})
+    output$se.text <- renderText({paste0(" ", datasetInput3()[[error.var()]])})
     
     output$distPlot <- renderPlotly({
         subplot(ggplotly(ggplot() + 
