@@ -52,9 +52,9 @@ ui <- fluidPage(
         <li> Select \"Educational Attainment\" and \"Race\" from the 
         dropdown menus below to update the 
         map and standard error distribution </li>
-        <li>Use the slider to adjust the percentile range displayed on the map&#10013; </li>
+        <li>Use the slider to adjust the percentile range displayed on the map&#8224; </li>
         <li>Move your cursor over the plots for more information</li>
-        <p>&#10013;<i>Note: States with missing (NA) data or those that are 
+        <p>&#8224;<i>Note: States with missing (NA) data or those that are 
              outside the percentile range will appear gray</p></i>
              </ul>"), 
             selectInput("degree", "Educational Attainment:", 
