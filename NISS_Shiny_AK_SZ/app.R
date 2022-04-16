@@ -74,11 +74,10 @@ ui <- fluidPage(
                         value = c(0, 60)), 
         HTML("<b>US Overall stats:</b> 
              <br>Percent Achieved:"), 
-        
         textOutput("mean.text"), 
         
         HTML("<b> More Information:</b>
-             <br> <p><a href=\"https://nces.ed.gov/programs/digest/d20/tables/dt20_104.85.asp/\">NCES Source Data Here</a></p>
+             <br> <p><a href=\"https://nces.ed.gov/programs/digest/d20/tables/dt20_104.85.asp\">NCES Source Data Here</a></p>
              <i>*High school completion includes through equivalency programs 
              such as a GED program.</i>
              <br><i>*Total includes racial/ethnic groups not shown separately.</i>
@@ -127,7 +126,7 @@ server <- function(input, output) {
         return(dataset)
     })
     
-    mean.text <- reactive({paste0(" ", datasetInput3()[[input$race]])})
+    output$mean.text <- renderText({paste0(" ", datasetInput3()[[input$race]])})
     
     error.var <- reactive({paste(input$race, "standard error")})
     
