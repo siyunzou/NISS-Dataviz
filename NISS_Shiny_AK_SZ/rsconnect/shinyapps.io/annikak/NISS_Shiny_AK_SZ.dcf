@@ -5,9 +5,9 @@ account: annikak
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6103876
-bundleId: 5805291
+bundleId: 5807023
 url: https://annikak.shinyapps.io/NISS_Shiny_AK_SZ/
-when: 1650129771.99859
-lastSyncTime: 1650129771.99859
+when: 1650208576.94557
+lastSyncTime: 1650208576.94557
 asMultiple: FALSE
 asStatic: FALSE

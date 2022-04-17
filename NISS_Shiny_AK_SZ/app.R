@@ -89,7 +89,7 @@ ui <- fluidPage(
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotlyOutput("distPlot", width="100%"),
+            plotlyOutput("distPlot"),
             #plotlyOutput("boxPlot"), 
             width = 8
         )
@@ -151,7 +151,8 @@ server <- function(input, output) {
                                                  name = "Percent (%)", 
                                                  limits = c(input$percentile[1], input$percentile[2])) + 
                              ggtitle(paste("Percent with", input$degree, "in the United States")), 
-                         tooltip = "text", height = 700) %>% 
+                         tooltip = "text", height = 700) %>% #********************************************************
+                    #https://stackoverflow.com/questions/44324783/dynamically-adjust-height-and-or-width-of-shiny-plotly-output-based-on-window-si
                     plotly::layout(xaxis = list(title = "", 
                                                 zeroline = FALSE, 
                                                 showline = FALSE,
