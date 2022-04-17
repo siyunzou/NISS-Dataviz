@@ -9,6 +9,7 @@ library(mapproj)
 library(plotly)
 library(shiny)
 
+
 #Import hexbins
 hex <- geojson_read("us_states_hexgrid.geojson", what = "sp")
 
@@ -88,7 +89,7 @@ ui <- fluidPage(
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotlyOutput("distPlot"),
+            plotlyOutput("distPlot", width="100%"),
             #plotlyOutput("boxPlot"), 
             width = 8
         )
