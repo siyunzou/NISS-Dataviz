@@ -42,7 +42,21 @@ centers <- cbind.data.frame(data.frame(gCentroid(hex, byid = TRUE), id = hex@dat
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-    
+    tags$head(tags$script('
+                        var dimension = [0, 0];
+                        $(document).on("shiny:connected", function(e) {
+                        dimension[0] = window.innerWidth;
+                        dimension[1] = window.innerHeight;
+                        Shiny.onInputChange("dimension", dimension);
+                        });
+                        $(window).resize(function(e) {
+                        dimension[0] = window.innerWidth;
+                        dimension[1] = window.innerHeight;
+                        Shiny.onInputChange("dimension", dimension);
+                        });
+                        ')),
+    height = "auto",
+    width = "auto",
     # Application title
     titlePanel(HTML(paste("Comparing Educational Attainment", "Across Racial Groups (2019)", sep = "<br/>"))),
     
@@ -97,7 +111,7 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
     datasetInput <- reactive({
         if (input$degree == "Bachelor's Degree or Higher"){
             dataset <- hex_fortify_col
@@ -128,6 +142,8 @@ server <- function(input, output) {
         return(dataset3)
     })
     
+    observeEvent(input$dimension,{ 
+        
     output$race.text <- renderText({input$race})
     output$mean.text <- renderText({paste0(" ", datasetInput3()[[input$race]])})
     error.var <- reactive({paste(input$race, "standard error")})
@@ -145,7 +161,7 @@ server <- function(input, output) {
                                                                                    "<br>Difference from US (%): ", 
                                                                                    round(datasetInput3()[[input$race]] - 
                                                                                        datasetInput()[[input$race]], 1))), 
-                                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
+                                          size = 0, alpha = 0.9, color = "#f7f7f7", width = (0.95*as.numeric(input$dimension[1])), height = as.numeric(input$dimension[2])) + 
                              theme_void() +
                              scale_fill_gradient(low = "white", high = "purple", #muted purple hexcode: #9467bd
                                                  name = "Percent (%)", 
@@ -181,6 +197,7 @@ server <- function(input, output) {
                                                                         xanchor = "center", 
                                                                         yanchor = "bottom", 
                                                                         showarrow = FALSE))
+    })
     })
     
 }
