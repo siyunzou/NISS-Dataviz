@@ -161,13 +161,13 @@ server <- function(input, output, session) {
                                                                                    "<br>Difference from US (%): ", 
                                                                                    round(datasetInput3()[[input$race]] - 
                                                                                        datasetInput()[[input$race]], 1))), 
-                                          size = 0, alpha = 0.9, color = "#f7f7f7", width = (0.95*as.numeric(input$dimension[1])), height = as.numeric(input$dimension[2])) + 
+                                          size = 0, alpha = 0.9, color = "#f7f7f7") + 
                              theme_void() +
                              scale_fill_gradient(low = "white", high = "purple", #muted purple hexcode: #9467bd
                                                  name = "Percent (%)", 
                                                  limits = c(input$percentile[1], input$percentile[2])) + 
                              ggtitle(paste("Percent with", input$degree, "in the United States")), 
-                         tooltip = "text", height = 700) %>% #********************************************************
+                         tooltip = "text", width = (0.95*as.numeric(input$dimension[1])), height = as.numeric(input$dimension[2])) %>% #********************************************************
                     #https://stackoverflow.com/questions/44324783/dynamically-adjust-height-and-or-width-of-shiny-plotly-output-based-on-window-si
                     plotly::layout(xaxis = list(title = "", 
                                                 zeroline = FALSE, 
