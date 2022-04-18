@@ -143,6 +143,8 @@ server <- function(input, output, session) {
     })
     
     observeEvent(input$dimension,{ 
+        w <- .65*as.numeric(input$dimension[1])
+        h <- .8*as.numeric(input$dimension[2])
         
     output$race.text <- renderText({input$race})
     output$mean.text <- renderText({paste0(" ", datasetInput3()[[input$race]])})
@@ -167,7 +169,8 @@ server <- function(input, output, session) {
                                                  name = "Percent (%)", 
                                                  limits = c(input$percentile[1], input$percentile[2])) + 
                              ggtitle(paste("Percent with", input$degree, "in the United States")), 
-                         tooltip = "text", width = (0.95*as.numeric(input$dimension[1])), height = as.numeric(input$dimension[2])) %>% #********************************************************
+                         tooltip = "text", width = w,#ifelse(w < h, w, (1.33)*h), 
+                         height = h)%>%#ifelse(w < h, .75*w, h)) %>% #********************************************************
                     #https://stackoverflow.com/questions/44324783/dynamically-adjust-height-and-or-width-of-shiny-plotly-output-based-on-window-si
                     plotly::layout(xaxis = list(title = "", 
                                                 zeroline = FALSE, 
